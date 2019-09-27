@@ -11,7 +11,7 @@ module.exports = createFilter
  */
 function createFilter (filter) {
   // eslint-disable-next-line no-new-func
-  return new Function('f', 'var p = (f || {}); return ' + compile(filter))
+  return new Function('entity', 'var t = (entity && entity.tags || {}); return ' + compile(filter))
 }
 
 function compile (filter) {
@@ -38,12 +38,20 @@ function compile (filter) {
 
 const js = JSON.stringify
 
+const specialRefs = {
+  '$type': 'type',
+  '$id': 'id',
+  '$created': 'created_at',
+  '$modified': 'timestamp'
+}
+
 function compilePropertyReference (p) {
-  return typeof p === 'string'
-    ? `p[${js(p)}]`
-    : p
-      .map(q => js(q))
-      .map((q, i, a) => `p[${a.slice(0, i + 1).join('][')}]`).join(' && ')
+  return specialRefs[p] ? 'entity.' + specialRefs[p]
+    : typeof p === 'string'
+      ? `t[${js(p)}]`
+      : p
+        .map(q => js(q))
+        .map((q, i, a) => `t[${a.slice(0, i + 1).join('][')}]`).join(' && ')
 }
 
 function compileComparisonOp (property, value, op, checkType) {
@@ -70,7 +78,7 @@ function compileInOp (property, values) {
 }
 
 function compileHasOp (property) {
-  return JSON.stringify(property) + ' in p'
+  return JSON.stringify(property) + ' in t'
 }
 
 function compileNegation (expression) {

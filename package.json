@@ -1,8 +1,8 @@
 {
-  "name": "compile-filter",
+  "name": "mapeo-entity-filter",
   "version": "1.1.0",
   "main": "./index.js",
-  "description": "Compiles a filter from a filter expression, for array filtering",
+  "description": "Compiles a filter from a filter expression, for filtering Mapeo entities",
   "dependencies": {},
   "devDependencies": {
     "standard": "^12.0.1",
@@ -17,12 +17,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/gmaclennan/compile-filter.git"
+    "url": "git+ssh://git@github.com/digidem/mapeo-entity-filter.git"
   },
   "bugs": {
-    "url": "https://github.com/gmaclennan/compile-filter/issues"
+    "url": "https://github.com/digidem/mapeo-entity-filter/issues"
   },
-  "homepage": "https://github.com/gmaclennan/compile-filter#readme",
+  "homepage": "https://github.com/digidem/mapeo-entity-filter#readme",
   "author": "Gregor MacLennan",
   "license": "MIT",
   "keywords": [

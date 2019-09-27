@@ -1,13 +1,14 @@
-## compile-filter
+## Mapeo Entity Filter
 
-[![Build Status](https://travis-ci.org/gmaclennan/compile-filter.svg?branch=master)](https://travis-ci.org/gmaclennan/compile-filter)
-[![npm](https://img.shields.io/npm/v/compile-filter.svg)](https://www.npmjs.com/package/compile-filter)
+[![Build Status](https://travis-ci.org/digidem/mapeo-entity-filter.svg?branch=master)](https://travis-ci.org/digidem/mapeo-entity-filter)
+[![npm](https://img.shields.io/npm/v/mapeo-entity-filter.svg)](https://www.npmjs.com/package/mapeo-entity-filter)
 
 This library is forked from
 [mapbox/feature-filter](https://github.com/mapbox/feature-filter), but adapted
-to work with any object. This library implements the semantics specified by the
-[Mapbox GL JS spec](https://www.mapbox.com/mapbox-gl-style-spec/#filter), but
-supports arrays as keys as well as strings, in order to filter against nested properties
+to work with entities in the [mapeo-core](https://github.com/digidem/mapeo-core)
+database. This library implements the semantics specified by the [Mapbox GL JS
+spec](https://www.mapbox.com/mapbox-gl-style-spec/#other-filter), but supports
+arrays as keys as well as strings, in order to filter against nested tags.
 
 ### API
 
@@ -27,7 +28,7 @@ whether a given feature passes its test.
 ### Usage
 
 ```javascript
-var compile = require('compile-filter');
+var compile = require('mapeo-entity-filter');
 
 // will match a feature with class of street_limited,
 // AND an admin_level less than or equal to 3,
@@ -43,13 +44,15 @@ var testFilter = compile(filter);
 
 // Layer feature that you're testing. Must have type
 // and properties keys.
-var feature = {
-   class: "street_limited"
-   admin_level: 1
+var entity = {
+  tags: {
+    class: "street_limited"
+    admin_level: 1
+  }
 };
 
 // will return a boolean based on whether the feature matched the filter
-return testFilter(feature);
+return testFilter(entity);
 ```
 
 ### Filter expression language
@@ -88,7 +91,17 @@ return testFilter(feature);
 
 `["none", f0, ..., fn]` logical `NOR`: _¬f0 ∧ ... ∧ ¬fn_
 
-A value (and v0, ..., vn for set operators) must be a [string](#string), [number](#number), or [boolean](#boolean) to compare the property value against.
+A _key_ must be a string that identifies a entity tag, or one of the following special keys:
+
+* `$type`: the entity type. This key may be used with the `"=="`,`"!="`,
+  `"in"`, and `"!in"` operators. Possible values are `"observation"`, `"node"`,
+  and `"way"`.
+* `$id`: the entity identifier. This key may be used with the `"=="`,`"!="`,
+  `"in"`, and `"!in"` operators.
+* `$created`: the timestamp the entity was created (ISO string).
+* `$modified`: the timestamp the entity was modified (ISO string).
+
+A value (and v0, ..., vn for set operators) must be a [string](#string), [number](#number), or [boolean](#boolean) to compare the tag value against.
 
 Set membership filters are a compact and efficient way to test whether a field matches any of multiple values.
 
@@ -100,7 +113,7 @@ The `"all"`, `"any"`, and `"none"` filter operators are used to create compound 
 ["==", "class", "street_major"]
 ```
 
-This filter requires that the `class` property of each feature is equal to either "street_major", "street_minor", or "street_limited".
+This filter requires that the `class` tag of each feature is equal to either "street_major", "street_minor", or "street_limited".
 
 ```json
 ["in", "class", "street_major", "street_minor", "street_limited"]
